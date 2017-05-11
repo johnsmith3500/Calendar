@@ -26,7 +26,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>1_10</title>
+	<title>Calender</title>
 	<link rel="stylesheet" href="styles.css">
 	<h1>Calender</h1>
 </head>
