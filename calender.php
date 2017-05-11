@@ -12,8 +12,10 @@
 			'November'=>'',
 			'December'=>'');	// this array for forming input date form
 	$time=time();	// default time (month) - current time
-	$year='';
+	$year=date('Y');	// default year - current year
+	$month=date('n');	// default month - current month
 	$current_month=1;	// check if we show current month then show current day blinking
+	
 	if(!empty($_POST['year']) && !empty($_POST['month']))	// take year and month from input form, if they are 
 	{
 		$time=strtotime($_POST['month'].' '.$_POST['year']);
