@@ -11,18 +11,25 @@
 			'October'=>'',
 			'November'=>'',
 			'December'=>'');	// this array for forming input date form
-	$time=time();	// default time (month) - current time
+//	$time=time();	// default time (month) - current time
 	$year=date('Y');	// default year - current year
 	$month=date('n');	// default month - current month
+	$day=date('j');		// default day - today
+	$months[date('F')]='selected';	// select current month in select input
 	$current_month=1;	// check if we show current month then show current day blinking
 	
 	if(!empty($_POST['year']) && !empty($_POST['month']))	// take year and month from input form, if they are 
 	{
-		$time=strtotime($_POST['month'].' '.$_POST['year']);
+	//	$time=strtotime($_POST['month'].' '.$_POST['year']);
 		$year=$_POST['year'];
+		$month=$_POST['month'];
+		$day=1;
+		$months[date('F')]='';	// deselect current month 
 		$months[$_POST['month']]='selected';
 		$current_month=0;
 	}
+	$time=strtotime($day.' '.$month.' '.$year);
+	print '$year='.$year.' $month='.$month.' $day='.$day.'<br>';
 ?>
 <!doctype html>
 <html lang="en">
@@ -56,6 +63,7 @@
 	}
 	$date=date('j:N:t', $time);
 	sscanf($date, "%d:%d:%d", $mday, $wday, $tdays); // $mday - this day of month; $wday - this day of week; $tdays - number of days in this month
+	print '$mday='.$mday.' $wday='.$wday.' $tdays='.$tdays.'<br>';
 	$wday1=get_wday1($mday, $wday); // get day of week from which starts this month
 	print '<table>';
 	$day=1;
