@@ -1,4 +1,9 @@
 <?php	// calender.php - simple web calender; tested on php 7.0.1
+	function get_wday1($mday, $wday)	// function calculate day of week of 1st day in the month; return 1..7
+	{
+		$retval=$wday-($mday-floor($mday/7)*7)+1;
+		return $retval;
+	}
 	$months=array(	'January'=>'',
 			'February'=>'',
 			'March'=>'',
@@ -11,25 +16,22 @@
 			'October'=>'',
 			'November'=>'',
 			'December'=>'');	// this array for forming input date form
-//	$time=time();	// default time (month) - current time
 	$year=date('Y');	// default year - current year
-	$month=date('n');	// default month - current month
+	$month=date('F');	// default month - current month
 	$day=date('j');		// default day - today
-	$months[date('F')]='selected';	// select current month in select input
+	$months[$month]='selected';	// select current month in select input
 	$current_month=1;	// check if we show current month then show current day blinking
 	
 	if(!empty($_POST['year']) && !empty($_POST['month']))	// take year and month from input form, if they are 
 	{
-	//	$time=strtotime($_POST['month'].' '.$_POST['year']);
 		$year=$_POST['year'];
 		$month=$_POST['month'];
 		$day=1;
 		$months[date('F')]='';	// deselect current month 
-		$months[$_POST['month']]='selected';
+		$months[$month]='selected';
 		$current_month=0;
 	}
-	$time=strtotime($day.' '.$month.' '.$year);
-	print '$year='.$year.' $month='.$month.' $day='.$day.'<br>';
+	$time=strtotime("$day $month $year");	// timestamp for asking month
 ?>
 <!doctype html>
 <html lang="en">
@@ -56,55 +58,55 @@
 	<pre>
 	<?php
 // horizontal version
-	function get_wday1($mday, $wday)	// function calculate day of week of 1st day in the month; return 1..7
+	function print_horizontal($time, $current_month)
 	{
-		$retval=$wday-($mday-floor($mday/7)*7)+1;
-		return $retval;
-	}
-	$date=date('j:N:t', $time);
-	sscanf($date, "%d:%d:%d", $mday, $wday, $tdays); // $mday - this day of month; $wday - this day of week; $tdays - number of days in this month
-	print '$mday='.$mday.' $wday='.$wday.' $tdays='.$tdays.'<br>';
-	$wday1=get_wday1($mday, $wday); // get day of week from which starts this month
-	print '<table>';
-	$day=1;
-	$week=1;
-	while($day<=$tdays)
-	{
-		print '<tr>';
-		for($i=1; $i<=7; $i++)
+		$date=date('j:N:t', $time);	// get date in format: day:day_of_week:days_in_month
+		sscanf($date, "%d:%d:%d", $mday, $wday, $tdays); // $mday - this day of month; $wday - this day of week; $tdays - number of days in this month
+		$wday1=get_wday1($mday, $wday); // get day of week from which starts this month
+		print '<table>';
+		$day=1;
+		$week=1;
+		while($day<=$tdays)
 		{
-			print '<td bgcolor="'.($i>5 ? 'darkred' : '').'">';
-			if($i<$wday1 && $week==1)	// fill first week with ' '
+			print '<tr>';
+			for($i=1; $i<=7; $i++)
 			{
-				print ' ';
-			}
-			else if($day<=$tdays)
-			{
-				if($day==$mday && $current_month) // today day
+				print '<td bgcolor="'.($i>5 ? 'darkred' : '').'">';
+				if($i<$wday1 && $week==1)	// fill first week with ' '
 				{
-					print '<span class="blink">';
+					print ' ';
 				}
-				printf("%2d", $day);
-				if($day==$mday && $current_month) // today day
+				else if($day<=$tdays)
 				{
-					print '</span>';
+					if($day==$mday && $current_month) // today day
+					{
+						print '<span class="blink">';
+					}
+					printf("%2d", $day);
+					if($day==$mday && $current_month) // today day
+					{
+						print '</span>';
+					}
+					$day++;
 				}
-				$day++;
+				else			// fill last week with ' '
+				{
+					print ' ';
+				}
+				print '</td>';
 			}
-			else			// fill last week with ' '
-			{
-				print ' ';
-			}
-			print '</td>';
+			print '</tr>'."\n";
+			$week++;
 		}
-		print '</tr>'."\n";
-		$week++;
+		print '</table>';
 	}
-	print '</table>';
+	
+		
+	print_horizontal($time, $current_month);
 	
 // vertical version
 	// calculate number of weeks(full and not full) in this month
-	$weeks=floor($tdays/7);	// number of full weeks
+/*	$weeks=floor($tdays/7);	// number of full weeks
 	$rem=$tdays%7; // number of days out of full week
 	if($rem>0)
 	{
@@ -145,7 +147,7 @@
 		}
 		print '</tr>'."\n";
 	}
-	print '</table>';
+	print '</table>';	*/
 	?>
 	</pre>
 </body>
