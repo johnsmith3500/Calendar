@@ -1,4 +1,4 @@
-<?php	// calender.php - simple web calender; tested on php 7.0.1
+<?php	// calendar.php - simple web calendar; tested on php 7.0.1
 	function get_wday1($mday, $wday)	// function calculate day of week of 1st day in the month; return 1..7
 	{
 		$retval=$wday-($mday-floor($mday/7)*7)+1;
@@ -37,21 +37,21 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Calender</title>
+	<title>Calendar</title>
 	<link rel="stylesheet" href="styles.css">
-	<h1>Calender</h1>
+	<h1>Calendar</h1>
 </head>
 <body>
 <!-------------------------------INPUT FORM BEGIN---------------------------------------------->
 	<form method="POST">
-		<p>Enter year: <input type="text" name="year" size="4" value="<?= $year ?>"></p>
-		<p>Choose month:  <select name="month">
+		<p><div class="in_label">Enter year:</div><input type="text" name="year" size="4" value="<?= $year ?>"></p>
+		<p><div class="in_label">Choose month:</div><select name="month">
 					<?php
 					foreach($months as $key => $value)
 						print '<option value="'.$key.'" '.$value.'>'.$key.'</option>'."\n";
 					?>
 					</select></p>
-		<input type="submit" value="Show">
+		<p><div class="in_label"></div><input type="submit" value="Show"></p>
 	</form>
 <!-------------------------------INPUT FORM END------------------------------------------------>
 	
@@ -101,9 +101,10 @@
 		print '</table>';
 	}
 	
-		
+	print '<fieldset>';
+	print '<legend>Horizontal</legend>';	
 	print_horizontal($time, $current_month);
-	
+	print '</fieldset>';
 // vertical version
 	// calculate number of weeks(full and not full) in this month
 /*	$weeks=floor($tdays/7);	// number of full weeks

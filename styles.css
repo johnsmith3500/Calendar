@@ -20,4 +20,19 @@ td {
 	border: 1px solid black;
 	border-radius: 4px;
 	}
-	
+.in_label {
+	display: inline-block;
+	margin: 0 0.5em 0 0;
+	width: 8em;
+	height: 1em;
+	color: white;
+	text-align: right;
+	}
+input[type=submit] {
+	color: red;
+	}
+fieldset {
+	padding: 2em;
+	width: 20em;
+	border-radius: 10px;
+	}
