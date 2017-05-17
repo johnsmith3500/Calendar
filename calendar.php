@@ -20,7 +20,6 @@
 	$month=date('F');	// default month - current month
 	$day=date('j');		// default day - today
 	$months[$month]='selected';	// select current month in select input
-	$current_month=1;	// check if we show current month then show current day blinking
 	
 	if(!empty($_POST['year']) && !empty($_POST['month']))	// take year and month from input form, if they are 
 	{
@@ -29,8 +28,14 @@
 		$day=1;
 		$months[date('F')]='';	// deselect current month 
 		$months[$month]='selected';
-		$current_month=0;
 	}
+	if($year == date('Y') && $month == date('F'))
+	{
+		$current_month=1;	// check if we show current month then show current day blinking
+		$day=date('j');
+	}
+	else
+		$current_month=0;
 	$time=strtotime("$day $month $year");	// timestamp for asking month
 ?>
 <!doctype html>
@@ -63,7 +68,7 @@
 		$date=date('j:N:t', $time);	// get date in format: day:day_of_week:days_in_month
 		sscanf($date, "%d:%d:%d", $mday, $wday, $tdays); // $mday - this day of month; $wday - this day of week; $tdays - number of days in this month
 		$wday1=get_wday1($mday, $wday); // get day of week from which starts this month
-		print '<table>';
+		print '<table class="calendar">';
 		$day=1;
 		$week=1;
 		while($day<=$tdays)
@@ -100,55 +105,67 @@
 		}
 		print '</table>';
 	}
+// vertical version
+	function print_vertical($time, $current_month)
+	{
+		$date=date('j:N:t', $time);	// get date in format: day:day_of_week:days_in_month
+		sscanf($date, "%d:%d:%d", $mday, $wday, $tdays); // $mday - this day of month; $wday - this day of week; $tdays - number of days in this month
+		$wday1=get_wday1($mday, $wday); // get day of week from which starts this month
+		// calculate number of weeks(full and not full) in this month
+		$weeks=floor($tdays/7);	// number of full weeks
+		$rem=$tdays%7; // number of days out of full week
+		if($rem>0)
+		{
+			if($wday1+$rem>7)
+			{
+				$weeks+=2;
+			}
+			else
+			{
+				$weeks+=1;
+			}
+		}
+		$startday=2-$wday1;	// what number is monday (may be negative)
+		print '<table class="calendar">';
+		for($i=$startday; $i<=$startday+6; $i++)
+		{
+			print '<tr>';
+			for($j=0; $j<$weeks; $j++)
+			{
+				print '<td bgcolor="'.($i<($startday+5) ? '' : 'darkred').'">';
+				if(($i+$j*7)<1 || ($i+$j*7)>$tdays)	// ($i+$j*7) - current day
+				{
+					print ' ';
+				}
+				else
+				{
+					if($i+$j*7==$mday && $current_month) // today day
+					{
+						print '<span class="blink">';
+					}
+					printf("%2d", $i+$j*7);
+					if($i+$j*7==$mday && $current_month) // today day
+					{
+						print '</span>';
+					}
+				}
+				print '</td>';
+			}
+			print '</tr>'."\n";
+		}
+		print '</table>';	
+	}
+		
 	
 	print '<fieldset>';
 	print '<legend>Horizontal</legend>';	
 	print_horizontal($time, $current_month);
 	print '</fieldset>';
-// vertical version
-	// calculate number of weeks(full and not full) in this month
-/*	$weeks=floor($tdays/7);	// number of full weeks
-	$rem=$tdays%7; // number of days out of full week
-	if($rem>0)
-	{
-		if($wday1+$rem>7)
-		{
-			$weeks+=2;
-		}
-		else
-		{
-			$weeks+=1;
-		}
-	}
-	$startday=2-$wday1;	// what number is monday (may be negative)
-	print '<br><table>';
-	for($i=$startday; $i<=$startday+6; $i++)
-	{
-		print '<tr>';
-		for($j=0; $j<$weeks; $j++)
-		{
-			print '<td bgcolor="'.($i<($startday+5) ? '' : 'darkred').'">';
-			if(($i+$j*7)<1 || ($i+$j*7)>$tdays)	// ($i+$j*7) - current day
-			{
-				print ' ';
-			}
-			else
-			{
-				if($i+$j*7==$mday && $current_month) // today day
-				{
-					print '<span class="blink">';
-				}
-				printf("%2d", $i+$j*7);
-				if($i+$j*7==$mday && $current_month) // today day
-				{
-					print '</span>';
-				}
-			}
-			print '</td>';
-		}
-		print '</tr>'."\n";
-	}
-	print '</table>';	*/
+	
+	print '<fieldset>';
+	print '<legend>Vertical</legend>';	
+	print_vertical($time, $current_month);
+	print '</fieldset>';
 	?>
 	</pre>
 </body>
